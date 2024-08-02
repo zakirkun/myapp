@@ -4,7 +4,7 @@ class ChapterScreen extends StatelessWidget {
   final List<String> imageUrls;
 
   ChapterScreen({
-    required this.imageUrls,
+    required this.imageUrls, required String chapter,
   });
 
   @override

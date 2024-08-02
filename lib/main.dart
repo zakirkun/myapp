@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/provider/provider.dart';
 import 'package:myapp/screens/home.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => BookmarkProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

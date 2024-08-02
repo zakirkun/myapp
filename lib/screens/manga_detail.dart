@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/models/bookmark.dart';
+import 'package:myapp/provider/provider.dart';
 import 'package:myapp/screens/chapter.dart';
+import 'package:provider/provider.dart';
+
 class MangaDetailScreen extends StatelessWidget {
   final String title;
   final String genre;
@@ -19,80 +23,73 @@ class MangaDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-          bottom: TabBar(
-            tabs: [
-              Tab(text: 'Details'),
-              Tab(text: 'Chapters'),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            _buildDetailLayout(),
-            _buildChapterLayout(context),
-          ],
-        ),
-      ),
+    final bookmarkProvider = Provider.of<BookmarkProvider>(context);
+    final bookmark = Bookmark(
+      imageUrl: imageUrl,
+      title: title,
+      rating: rating,
     );
-  }
 
-  Widget _buildDetailLayout() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(imageUrl),
-          SizedBox(height: 16),
-          Text(
-            title,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Genre: $genre',
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Rating: $rating',
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(height: 16),
-          Text(
-            description,
-            style: TextStyle(fontSize: 16),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            icon: Icon(
+              bookmarkProvider.isBookmarked(bookmark)
+                  ? Icons.bookmark
+                  : Icons.bookmark_border,
+            ),
+            onPressed: () {
+              if (bookmarkProvider.isBookmarked(bookmark)) {
+                bookmarkProvider.removeBookmark(bookmark);
+              } else {
+                bookmarkProvider.addBookmark(bookmark);
+              }
+            },
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildChapterLayout(BuildContext context) {
-    return ListView.builder(
-      itemCount: chapters.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text('Chapter ${index + 1}'),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ChapterScreen(
-                  imageUrls: List.generate(
-                    10, // Number of images
-                    (imgIndex) => 'https://example.com/chapter${index + 1}_image${imgIndex + 1}.jpg',
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.network(imageUrl),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              title,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Genre: $genre\nDescription: $description\nRating: $rating',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: chapters.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(chapters[index]),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ChapterScreen(
+                          chapter: chapters[index],
+                          imageUrls: [],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

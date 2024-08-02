@@ -2,46 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:myapp/components/manga_section.dart';
 import 'package:myapp/components/title_section.dart';
+import 'package:myapp/models/manga.dart';
 import 'package:myapp/screens/genre.dart';
 import 'package:myapp/screens/manga_detail.dart';
 
 class HomeScreenContent extends StatelessWidget {
-  final List<Map<String, String>> topMangaItems = [
-    {
-      'imageUrl':
-          'https://cover.komiku.id/wp-content/uploads/2024/08/A1-ATRI-My-Dear-Moments.jpg?resize=450,235&quality=60',
-      'title': 'Top Manga 1',
-      'category': 'Action',
-      'rating': '4.8/5',
-    },
-    {
-      'imageUrl':
-          'https://cover.komiku.id/wp-content/uploads/2024/08/A1-The-Young-Master-of-Namgung-Is-an-Impersonal-Person.png?resize=450,235&quality=60',
-      'title': 'Top Manga 2',
-      'category': 'Adventure',
-      'rating': '4.8/5',
-    },
-    {
-      'imageUrl':
-          'https://cover.komiku.id/wp-content/uploads/2024/08/A1-It-Turns-Out-That-Im-The-Demonic-Ancestor.jpg?resize=450,235&quality=60',
-      'title': 'Top Manga 3',
-      'category': 'Fantasy',
-      'rating': '4.8/5',
-    },
-    {
-      'imageUrl':
-          'https://cover.komiku.id/wp-content/uploads/2024/08/A1-We-Are-Not-Dating.png?resize=450,235&quality=60',
-      'title': 'Top Manga 4',
-      'category': 'Romance',
-      'rating': '4.8/5',
-    },
-    {
-      'imageUrl':
-          'https://cover.komiku.id/wp-content/uploads/2024/08/A1-Hijiri-kun-wa-Kiyoku-Ikitai-1.jpg?resize=450,235&quality=60',
-      'title': 'Top Manga 5',
-      'category': 'Horror',
-      'rating': '4.8/5',
-    },
+  final List<Manga> topMangaItems = [
+    Manga(
+      imageUrl: 'https://example.com/top_image1.jpg',
+      title: 'Top Manga 1',
+      rating: '4.5/5',
+    ),
+    // Add more Manga items as needed
   ];
 
   final List<String> categories = [
@@ -83,12 +55,12 @@ class HomeScreenContent extends StatelessWidget {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => MangaDetailScreen(
-                              title: manga['title']!,
+                              title: manga.title,
                               genre: 'Action', // Replace with actual genre
                               description:
-                                  'Description for ${manga['title']}', // Replace with actual description
-                              rating: manga['rating']!,
-                              imageUrl: manga['imageUrl']!,
+                                  'Description for ${manga.title}', // Replace with actual description
+                              rating: manga.rating,
+                              imageUrl: manga.imageUrl,
                               chapters: List.generate(
                                   10, (index) => 'Chapter ${index + 1}'),
                             ),
@@ -106,7 +78,7 @@ class HomeScreenContent extends StatelessWidget {
                           children: [
                             Positioned.fill(
                               child: Image.network(
-                                manga['imageUrl']!,
+                                manga.imageUrl,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -132,7 +104,7 @@ class HomeScreenContent extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      manga['title']!,
+                                      manga.title,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
@@ -141,7 +113,7 @@ class HomeScreenContent extends StatelessWidget {
                                     ),
                                     SizedBox(height: 4),
                                     Text(
-                                      'Rating: ${manga['rating']}',
+                                      'Rating: ${manga.rating}',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 14,
@@ -172,17 +144,19 @@ class HomeScreenContent extends StatelessWidget {
                 ),
                 SizedBox(height: 8),
                 Container(
-                  height: 100,  // Adjust the height as needed
+                  height: 100, // Adjust the height as needed
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: categories.length,
                     itemBuilder: (context, index) {
+                      final category = categories[index];
+
                       return GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => GenreScreen(
-                                genre: categories[index],
+                                genre: category,
                               ),
                             ),
                           );
@@ -194,12 +168,13 @@ class HomeScreenContent extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Container(
-                            width: 120,  // Adjust width as needed
+                            width: 120, // Adjust width as needed
                             padding: EdgeInsets.all(8.0),
                             child: Center(
                               child: Text(
-                                categories[index],
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                category,
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
